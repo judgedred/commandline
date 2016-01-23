@@ -9,18 +9,48 @@ public class CommandPs implements Command
     {
         Process p;
         String os = System.getProperty("os.name").toLowerCase();
-        CharSequence cs = "windows";
+        CharSequence windows = "windows";
         String encoding;
-        if(os.contains(cs))
+        String commandLine;
+        if(os.contains(windows))
         {
             encoding = "cp866";
-            p = Runtime.getRuntime().exec("tasklist");
+            commandLine = "tasklist";
         }
         else
         {
             encoding = "UTF-8";
-            p = Runtime.getRuntime().exec("ps -e");
+            commandLine = "ps aux";
         }
+        if(args != null)
+        {
+            for(String a : args)
+            {
+                String[] arg = a.split("=");
+                if(arg.length == 2 && arg[1].length() > 2)
+                {
+                    String argName = arg[0];
+                    String argValue = arg[1].substring(1, arg[1].length() - 1);
+                    CharSequence sequence = "pname";
+                    if(argName.contains(sequence) && os.contains(windows))
+                    {
+                        commandLine += " /FI \"IMAGENAME eq \"" + argValue + "\"";
+//                            p = Runtime.getRuntime().exec("tasklist FI \"IMAGENAME eq " + argValue + "\"");
+                    }
+                    else if(argName.contains(sequence))
+                    {
+                        commandLine += " | grep " + argValue;
+                    }
+                }
+                else
+                {
+                    System.out.println("Wrong attribute.");
+                    return true;
+                }
+            }
+        }
+        p = Runtime.getRuntime().exec(commandLine);
+
         String line;
         if(p != null)
         {

@@ -17,7 +17,7 @@ public class ParsedCommand
     public ParsedCommand(String line)
     {
         String[] inputs = line.split(" ");
-        if(inputs != null)
+        if(inputs.length > 0)
         {
             commandName = inputs[0];
             if(inputs.length > 1)
