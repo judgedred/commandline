@@ -5,68 +5,87 @@ import java.io.InputStreamReader;
 public class CommandPs implements Command
 {
     @Override
-    public boolean execute(String[] args) throws IOException
+    public boolean execute(String[] args)
     {
-        Process p;
-        String os = System.getProperty("os.name").toLowerCase();
-        CharSequence windows = "windows";
-        String encoding;
-        String commandLine;
-        if(os.contains(windows))
+        BufferedReader input = null;
+        try
         {
-            encoding = "cp866";
-            commandLine = "tasklist";
-        }
-        else
-        {
-            encoding = "UTF-8";
-            commandLine = "ps aux";
-        }
-        if(args != null)
-        {
-            for(String a : args)
+            Process p;
+            String os = System.getProperty("os.name").toLowerCase();
+            CharSequence windows = "windows";
+            String encoding;
+            String commandLine;
+            if(os.contains(windows))
             {
-                String[] arg = a.split("=");
-                if(arg.length == 2 && arg[1].length() > 2)
+                encoding = "cp866";
+                commandLine = "tasklist";
+            }
+            else
+            {
+                encoding = "UTF-8";
+                commandLine = "ps aux";
+            }
+            if(args != null)
+            {
+                for(String a : args)
                 {
-                    String argName = arg[0];
-                    String argValue = arg[1].substring(1, arg[1].length() - 1);
-                    CharSequence sequence = "pname";
-                    if(argName.contains(sequence) && os.contains(windows))
+                    String[] arg = a.split("=");
+                    if(arg.length == 2 && arg[1].length() > 2)
                     {
-                        commandLine += " /FI \"IMAGENAME eq \"" + argValue + "\"";
-//                            p = Runtime.getRuntime().exec("tasklist FI \"IMAGENAME eq " + argValue + "\"");
+                        String argName = arg[0];
+                        String argValue = arg[1].substring(1, arg[1].length() - 1);
+                        CharSequence sequence = "pname";
+                        if(argName.contains(sequence) && os.contains(windows))
+                        {
+                            commandLine += " /FI \"IMAGENAME eq \"" + argValue + "\"";
+                        }
+                        else if(argName.contains(sequence))
+                        {
+                            commandLine += " | grep " + argValue;
+                        }
+                        else
+                        {
+                            System.out.println("Attribute not found.");
+                            return true;
+                        }
                     }
-                    else if(argName.contains(sequence))
+                    else
                     {
-                        commandLine += " | grep " + argValue;
+                        System.out.println("Wrong attribute.");
+                        return true;
                     }
-                }
-                else
-                {
-                    System.out.println("Wrong attribute.");
-                    return true;
                 }
             }
-        }
-        p = Runtime.getRuntime().exec(commandLine);
+            p = Runtime.getRuntime().exec(commandLine);
 
-        String line;
-        if(p != null)
-        {
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream(), encoding));
-            while((line = input.readLine()) != null)
+            String line;
+            if(p != null)
             {
-                System.out.println(line);
+                input = new BufferedReader(new InputStreamReader(p.getInputStream(), encoding));
+                while((line = input.readLine()) != null)
+                {
+                    System.out.println(line);
+                }
             }
-            input.close();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                if(input != null)
+                {
+                    input.close();
+                }
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
         }
         return true;
-    }
-
-    @Override
-    public String getName()
-    {
-        return "ps";
     }
 }

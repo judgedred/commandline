@@ -1,6 +1,3 @@
-import java.io.File;
-
-
 public class CommandExit implements Command
 {
     @Override
@@ -9,9 +6,4 @@ public class CommandExit implements Command
         return false;
     }
 
-    @Override
-    public String getName()
-    {
-        return "exit";
-    }
 }

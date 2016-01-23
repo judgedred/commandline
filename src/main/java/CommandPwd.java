@@ -5,13 +5,17 @@ public class CommandPwd implements Command
     @Override
     public boolean execute(String[] args)
     {
-        System.out.println(new File(".").getAbsoluteFile());
+        if(args != null)
+        {
+            for(String a : args)
+            {
+//               do something
+            }
+        }
+        else
+        {
+            System.out.println(new File(".").getAbsoluteFile());
+        }
         return true;
-    }
-
-    @Override
-    public String getName()
-    {
-        return "pwd";
     }
 }
