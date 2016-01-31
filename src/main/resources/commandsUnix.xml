@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<commands>
+    <command>
+        <name>ls</name>
+        <class>CommandLs</class>
+    </command>
+    <command>
+        <name>ps</name>
+        <class>CommandPsUnix</class>
+    </command>
+    <command>
+        <name>pwd</name>
+        <class>CommandPwd</class>
+    </command>
+    <command>
+        <name>exit</name>
+        <class>CommandExit</class>
+    </command>
+</commands>

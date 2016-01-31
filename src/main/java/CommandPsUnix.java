@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class CommandPs implements Command
+public class CommandPsUnix implements Command
 {
     @Override
     public boolean execute(String[] args)
@@ -10,8 +10,8 @@ public class CommandPs implements Command
         BufferedReader input = null;
         try
         {
-            String encoding = "cp866";
-            String commandLine  = "tasklist";
+            String encoding = "UTF-8";
+            String commandLine = "ps aux";
             if(args != null)
             {
                 for(String a : args)
@@ -24,7 +24,7 @@ public class CommandPs implements Command
                         CharSequence sequence = "pname";
                         if(argName.contains(sequence))
                         {
-                            commandLine += " /FI \"IMAGENAME eq \"" + argValue + "\"";
+                            commandLine += " | grep " + argValue;
                         }
                         else
                         {

@@ -20,7 +20,17 @@ public class CommandRunner
         try
         {
             commandMap = new HashMap<>();
-            File conf = new File("src/main/resources/commands.xml");
+            String os = System.getProperty("os.name").toLowerCase();
+            CharSequence windows = "windows";
+            File conf;
+            if(os.contains(windows))
+            {
+                conf = new File("src/main/resources/commands.xml");
+            }
+            else
+            {
+                conf = new File("src/main/resources/commandsUnix.xml");
+            }
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document document = db.parse(conf);
